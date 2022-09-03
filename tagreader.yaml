@@ -1,6 +1,28 @@
+# Insert your SSID and Your PWD after inital setup
+wifi:
+# networks:
+#    - ssid: 'REPLACEME'          # Enter your WiFi SSID here. Example: `ssid: 'your_network_name'`
+#      password: 'REPLACEME'      # Enter your wifi password here. Example: `password: 'abcde123456'`
+  ap:
+    ssid: ${name}
+
+# Enable the captive portal for inital WiFi setup
+captive_portal:
+
+dashboard_import:
+  package_import_url: github://smarthomejunkie/tagreader/tagreader.yaml
+
+improv_serial:
+
+
 substitutions:
   name: tagreader
   friendly_name: TagReader
+
+esphome:
+  name: $name
+  platform: ESP8266
+  board: d1_mini
 
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
@@ -216,17 +238,17 @@ pn532_i2c:
   id: pn532_board
   on_tag:
     then:
-    - if:
-        condition:
-          switch.is_on: led_enabled
-        then:
-        - light.turn_on:
-            id: activity_led
-            brightness: 100%
-            red: 0%
-            green: 100%
-            blue: 0%
-            flash_length: 500ms
+#    - if:
+#        condition:
+#          switch.is_on: led_enabled
+#        then:
+#        - light.turn_on:
+#            id: activity_led
+#            brightness: 100%
+#            red: 0%
+#            green: 100%
+#            blue: 0%
+#            flash_length: 500ms
     
     - delay: 0.15s #to fix slow component
         
@@ -313,14 +335,30 @@ pn532_i2c:
     
 # Define the buzzer output
 output:
-- platform: ledc
-  pin: GPIO16
+- platform: esp8266_pwm
+  pin: D7
   id: buzzer
 
 binary_sensor:
   - platform: status
     name: "${friendly_name} Status"
     entity_category: diagnostic
+
+
+text_sensor:
+  - platform: version
+    hide_timestamp: true
+    name: "${friendly_name} ESPHome Version"
+    entity_category: diagnostic
+  - platform: wifi_info
+    ip_address:
+      name: "${friendly_name} IP Address"
+      icon: mdi:wifi
+      entity_category: diagnostic
+    ssid:
+      name: "${friendly_name} Connected SSID"
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
 
 # Define buzzer as output for RTTTL
 rtttl:
@@ -330,7 +368,7 @@ rtttl:
 light:
 - platform: neopixelbus
   variant: WS2812
-  pin: GPIO17
+  pin: D8
   num_leds: 1
   flash_transition_length: 500ms
   type: GRB
