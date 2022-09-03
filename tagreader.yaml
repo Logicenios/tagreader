@@ -1,28 +1,6 @@
-# Insert your SSID and Your PWD after inital setup
-wifi:
-# networks:
-#    - ssid: 'REPLACEME'          # Enter your WiFi SSID here. Example: `ssid: 'your_network_name'`
-#      password: 'REPLACEME'      # Enter your wifi password here. Example: `password: 'abcde123456'`
-  ap:
-    ssid: ${name}
-
-# Enable the captive portal for inital WiFi setup
-captive_portal:
-
-dashboard_import:
-  package_import_url: github://adonno/tagreader/tagreader.yaml
-
-improv_serial:
-
-
 substitutions:
   name: tagreader
   friendly_name: TagReader
-
-esphome:
-  name: $name
-  platform: ESP8266
-  board: d1_mini
 
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
@@ -335,30 +313,14 @@ pn532_i2c:
     
 # Define the buzzer output
 output:
-- platform: esp8266_pwm
-  pin: D7
+- platform: ledc
+  pin: GPIO16
   id: buzzer
 
 binary_sensor:
   - platform: status
     name: "${friendly_name} Status"
     entity_category: diagnostic
-
-
-text_sensor:
-  - platform: version
-    hide_timestamp: true
-    name: "${friendly_name} ESPHome Version"
-    entity_category: diagnostic
-  - platform: wifi_info
-    ip_address:
-      name: "${friendly_name} IP Address"
-      icon: mdi:wifi
-      entity_category: diagnostic
-    ssid:
-      name: "${friendly_name} Connected SSID"
-      icon: mdi:wifi-strength-2
-      entity_category: diagnostic
 
 # Define buzzer as output for RTTTL
 rtttl:
@@ -368,7 +330,7 @@ rtttl:
 light:
 - platform: neopixelbus
   variant: WS2812
-  pin: D8
+  pin: GPIO17
   num_leds: 1
   flash_transition_length: 500ms
   type: GRB
