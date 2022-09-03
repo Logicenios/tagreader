@@ -21,8 +21,10 @@ substitutions:
 
 esphome:
   name: $name
-  platform: ESP8266
-  board: d1_mini
+esp32: 
+  board: esp32dev
+  framework:
+    type: arduino
 
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
@@ -221,7 +223,7 @@ api:
 
 # Enable OTA upgrade
 ota:
-
+  password: "testpasswd"
 i2c:
   scan: False
   frequency: 400kHz
@@ -335,8 +337,8 @@ pn532_i2c:
     
 # Define the buzzer output
 output:
-- platform: esp8266_pwm
-  pin: D7
+- platform: ledc
+  pin: D4
   id: buzzer
 
 binary_sensor:
@@ -368,7 +370,7 @@ rtttl:
 light:
 - platform: neopixelbus
   variant: WS2812
-  pin: D8
+  pin: D3
   num_leds: 1
   flash_transition_length: 500ms
   type: GRB
